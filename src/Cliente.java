@@ -58,7 +58,9 @@ class LaminaMarcoCliente extends JPanel implements Runnable { // Primera clase q
 	private String puertoCliente;
 	private String puertoServidor;
 	private RegistrosC regc;
-	private int contador = 1;
+	private int cliente;
+	private ArrayList<Integer> listaClientes = new ArrayList<Integer>();
+	private boolean clientevalido = false;
 	public int contador2 = 0;
 
 
@@ -77,8 +79,12 @@ class LaminaMarcoCliente extends JPanel implements Runnable { // Primera clase q
 
 		//puertoCliente = JOptionPane.showInputDialog("Introduce tu puerto: "); // En esta variable guardo el
 																				// puerto del cliente
-		puertoCliente = String.valueOf(contador);
-		contador++;
+		while(!clientevalido) {
+		cliente = (int) (Math.random()*9999+1);
+		clientevalido = disponible(cliente);
+		}
+		listaClientes.add(cliente);
+		puertoCliente = String.valueOf(cliente);
 		
 		/*puertoDestinatario = new JTextField(10);
 		add(puertoDestinatario);*/
@@ -102,6 +108,16 @@ class LaminaMarcoCliente extends JPanel implements Runnable { // Primera clase q
 
 		Thread hC = new Thread(this);
 		hC.start();
+	}
+	
+	private boolean disponible(int Numero) {
+		boolean valido = true;
+		for(int i = 0; i<listaClientes.size(); i++) {
+			if(listaClientes.get(i)==Numero) {
+				valido = false;
+			}
+		}
+		return valido;
 	}
 
 	private class EnviaTexto implements ActionListener {

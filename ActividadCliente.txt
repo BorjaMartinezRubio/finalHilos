@@ -184,3 +184,15 @@ b dice 1 al puerto
 b dice 1 al puerto 
 [Mon Mar 02 13:35:40 CET 2020] 
 b dice 1 al puerto 
+[Mon Mar 02 13:39:15 CET 2020] 
+1 dice 2 al puerto 
+[Mon Mar 02 13:54:46 CET 2020] 
+b dice 2 al puerto 
+[Mon Mar 02 13:54:48 CET 2020] 
+c dice 1 al puerto 
+[Mon Mar 02 13:54:51 CET 2020] 
+b dice 2 al puerto 
+[Mon Mar 02 13:54:53 CET 2020] 
+b dice 2 al puerto 
+[Mon Mar 02 13:55:00 CET 2020] 
+f dice 1 al puerto 

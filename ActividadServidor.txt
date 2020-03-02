@@ -332,3 +332,25 @@ Borja: h
  b: 1
 [Mon Mar 02 13:35:40 CET 2020] 
  Server: Lo siento no le he entendido bien
+[Mon Mar 02 13:39:15 CET 2020] 
+ 1: 2
+[Mon Mar 02 13:54:46 CET 2020] 
+ b: 2
+[Mon Mar 02 13:54:46 CET 2020] 
+ Server: Gracias por elegir el 2
+[Mon Mar 02 13:54:48 CET 2020] 
+ c: 1
+[Mon Mar 02 13:54:48 CET 2020] 
+ Server: Gracias por elegir el 1
+[Mon Mar 02 13:54:51 CET 2020] 
+ b: 2
+[Mon Mar 02 13:54:51 CET 2020] 
+ Server: Lo siento no le he entendido bien
+[Mon Mar 02 13:54:53 CET 2020] 
+ b: 2
+[Mon Mar 02 13:54:53 CET 2020] 
+ Server: Lo siento no le he entendido bien
+[Mon Mar 02 13:55:00 CET 2020] 
+ f: 1
+[Mon Mar 02 13:55:00 CET 2020] 
+ Server: Gracias por elegir el 1
