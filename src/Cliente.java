@@ -223,7 +223,7 @@ class RegistrosC {
 			fWriter.flush();
 			fWriter.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace();//hola
 		}
 	}
 }
