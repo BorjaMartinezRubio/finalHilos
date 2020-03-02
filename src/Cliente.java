@@ -58,6 +58,9 @@ class LaminaMarcoCliente extends JPanel implements Runnable { // Primera clase q
 	private String puertoCliente;
 	private String puertoServidor;
 	private RegistrosC regc;
+	private int contador = 1;
+	public int contador2 = 0;
+
 
 	public LaminaMarcoCliente() {
 		String nombreU = JOptionPane.showInputDialog("Nombre: "); // Pido nick y guardo
@@ -72,14 +75,20 @@ class LaminaMarcoCliente extends JPanel implements Runnable { // Primera clase q
 		JLabel labelTex = new JLabel("Destino: ");
 		add(labelTex);
 
-		puertoCliente = JOptionPane.showInputDialog("Introduce tu puerto: "); // En esta variable guardo el
+		//puertoCliente = JOptionPane.showInputDialog("Introduce tu puerto: "); // En esta variable guardo el
 																				// puerto del cliente
-		puertoDestinatario = new JTextField(10);
-		add(puertoDestinatario);
+		puertoCliente = String.valueOf(contador);
+		contador++;
+		
+		/*puertoDestinatario = new JTextField(10);
+		add(puertoDestinatario);*/
 
-		puertoServidor = JOptionPane.showInputDialog("Introduce puerto Servidor: "); // En esta variable guardo
+		//puertoServidor = JOptionPane.showInputDialog("Introduce puerto Servidor: "); // En esta variable guardo
 																						// el puerto del cliemte
+		puertoServidor = String.valueOf(9999);
+		
 		campochat = new JTextArea(12, 20);
+		campochat.setText("Server: Bienvenido \n              Elija su menu: \n              Menu 1 \n              Menu 2 \n              Menu 3");
 		add(campochat);
 
 		campoMen = new JTextField(20);
@@ -108,19 +117,25 @@ class LaminaMarcoCliente extends JPanel implements Runnable { // Primera clase q
 				PaqueteEnvio datos = new PaqueteEnvio();
 
 				datos.setNombre(nombre.getText()); // Envio texto al objeto
-				datos.setPuertoDestinatario(puertoDestinatario.getText()); // Envio puerto del cliente destinatario al
+				//datos.setPuertoDestinatario(puertoDestinatario.getText()); // Envio puerto del cliente destinatario al
 																			// objeto
 				datos.setPuertoC(puertoCliente); //// Envio puerto propio del cliente al objeto
 				datos.setMensaje(campoMen.getText()); // cojo los datos del mensaje
+				
+				conseguirPaso(datos);
+				
+				datos.setPaso(contador2);
+			
+				contador2 = datos.getPaso();
+				
 				regc.write("\n" + datos.getNombre() + " dice " + campoMen.getText() + " al puerto "
-						+ datos.getPuertoDestinatario()); // Escribimos en el fichero
+						/*+ datos.getPuertoDestinatario()*/); // Escribimos en el fichero
 
 				ObjectOutputStream paquete_datos = new ObjectOutputStream(socket.getOutputStream()); // Creo flujo de
 																										// datos de
 																										// salida al
 																										// objeto
 				paquete_datos.writeObject(datos); // Enviamos el objeto al socket determinado
-
 				socket.close();
 
 			} catch (UnknownHostException e) {
@@ -129,10 +144,19 @@ class LaminaMarcoCliente extends JPanel implements Runnable { // Primera clase q
 				System.out.println(e.getMessage());
 			}
 		}
+		
+		public void conseguirPaso (PaqueteEnvio datos) {
+			if(datos.getMensaje().equals("1")||datos.getMensaje().equals("2")||datos.getMensaje().equals("3") && contador2 == 0) {
+				contador2++;
+				System.out.println("Ahora estoy en el paso "+ contador2);
+					
+			}
+		}
 	}
 
 	@Override
 	public void run() { // metodo run hilo
+		
 
 		try {
 			ServerSocket servidor_cliente = new ServerSocket(Integer.parseInt(puertoCliente)); // Creo socket para
@@ -150,6 +174,9 @@ class LaminaMarcoCliente extends JPanel implements Runnable { // Primera clase q
 																			// paqueteenvio de paqueterecibido
 				if (!paqueteRecibido.getMensaje().equals(" online")) {
 					campochat.append("\n" + paqueteRecibido.getNombre() + ": " + paqueteRecibido.getMensaje());
+					if(paqueteRecibido.getMensaje().equalsIgnoreCase("Lo siento no le he entendido bien")) {
+						contador2--;
+					}
 				} else {
 					campochat.append("\n" + paqueteRecibido.getIps());
 				}
@@ -162,9 +189,10 @@ class LaminaMarcoCliente extends JPanel implements Runnable { // Primera clase q
 
 class PaqueteEnvio implements Serializable {// transforma el objeto en binario para mandarlo por la red
 
-	private String nombre, puertoDestinatario, mensaje;
+	private String nombre, /*puertoDestinatario,*/ mensaje;
 	private ArrayList<String> Ips;
 	private String puertoC;
+	private int paso;
 
 	public String getPuertoC() {
 		return puertoC;
@@ -190,13 +218,13 @@ class PaqueteEnvio implements Serializable {// transforma el objeto en binario p
 		this.nombre = nombre;
 	}
 
-	public String getPuertoDestinatario() {
+	/*public String getPuertoDestinatario() {
 		return puertoDestinatario;
-	}
+	}*/
 
-	public void setPuertoDestinatario(String puertoDestinatario) {
+	/*public void setPuertoDestinatario(String puertoDestinatario) {
 		this.puertoDestinatario = puertoDestinatario;
-	}
+	}*/
 
 	public String getMensaje() {
 		return mensaje;
@@ -204,6 +232,14 @@ class PaqueteEnvio implements Serializable {// transforma el objeto en binario p
 
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
+	}
+
+	public int getPaso() {
+		return paso;
+	}
+
+	public void setPaso(int paso) {
+		this.paso = paso;
 	}
 }
 
@@ -223,7 +259,7 @@ class RegistrosC {
 			fWriter.flush();
 			fWriter.close();
 		} catch (IOException e) {
-			e.printStackTrace();//hola
+			e.printStackTrace();
 		}
 	}
 }

@@ -14,7 +14,8 @@ public class Servidor {
 class MarcoServidor extends JFrame implements Runnable {
 
 	public MarcoServidor() {
-		//puertoServer = JOptionPane.showInputDialog("Abre Puerto Servidor: "); // Pido puerto servidor
+		// puertoServer = JOptionPane.showInputDialog("Abre Puerto Servidor: "); // Pido
+		// puerto servidor
 		puertoServer = String.valueOf(9999);
 		setBounds(1200, 300, 280, 350);
 
@@ -40,6 +41,8 @@ class MarcoServidor extends JFrame implements Runnable {
 		try {
 			ServerSocket servidor = new ServerSocket(Integer.parseInt(puertoServer)); // Creamos servidor
 			String nombre, puertoDestinatario, mensaje, puertoC;
+			int paso;
+			String mensajeRes;
 
 			PaqueteEnvio paquete_recibido; // Creamos objeto de la clase CLiente donde esta ubicada tambien la clase
 											// PaqueteEnvio
@@ -54,21 +57,26 @@ class MarcoServidor extends JFrame implements Runnable {
 																									// entrada
 				paquete_recibido = (PaqueteEnvio) paquete_datos.readObject(); // Objeto recibido de cliente
 				nombre = paquete_recibido.getNombre();
-				puertoDestinatario = paquete_recibido.getPuertoDestinatario();
+				// puertoDestinatario = paquete_recibido.getPuertoDestinatario();
 				mensaje = paquete_recibido.getMensaje();
 				puertoC = paquete_recibido.getPuertoC();
+				paso = paquete_recibido.getPaso();
 
-				if (!mensaje.equals("online")) {
-					Socket enviaDestinatario = new Socket("localhost", Integer.parseInt(puertoDestinatario));// este
-																												// socket
-																												// envia
-																												// la
-																												// informacion
-																												// al
-																												// destinatario
-																												// indicamos
-																												// el
-																												// puerto
+				areatexto.append("\n" + nombre + ": " + mensaje);
+				regs.write("\n " + nombre + ": " + mensaje);
+
+				if ((mensaje.equals("1") || mensaje.equals("2") || mensaje.equals("3")) && (paso == 1)) {
+					mensajeRes = ("Gracias por elegir el " + mensaje);
+					Socket enviaDestinatario = new Socket("localhost", Integer.parseInt(puertoC));// este
+																									// socket
+																									// envia
+																									// la
+																									// informacion
+																									// al
+																									// destinatario
+																									// indicamos
+																									// el
+																									// puerto
 					ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream()); // Aqui
 																														// meto
 																														// el
@@ -80,12 +88,29 @@ class MarcoServidor extends JFrame implements Runnable {
 																														// a
 																														// los
 																														// destinatarios
+					paquete_recibido.setMensaje(mensajeRes);
+					paquete_recibido.setNombre("Server");
 					paqueteReenvio.writeObject(paquete_recibido);
-					areatexto.append("\n" + nombre + ": " + mensaje + " para " + puertoDestinatario);
-					regs.write("\n" + nombre + ": " + mensaje + " para puerto " + puertoDestinatario);
+					areatexto.append("\n Server: " + mensajeRes);
+					regs.write("\n Server: " + mensajeRes);
 					paqueteReenvio.close();
 					enviaDestinatario.close();
 					socket.close();
+				} else {
+					mensajeRes = ("Lo siento no le he entendido bien");
+					Socket enviaDestinatario = new Socket("localhost", Integer.parseInt(puertoC));
+					
+					ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+					
+					paquete_recibido.setMensaje(mensajeRes);
+					paquete_recibido.setNombre("Server");
+					paqueteReenvio.writeObject(paquete_recibido);
+					areatexto.append("\n Server: " + mensajeRes);
+					regs.write("\n Server: " + mensajeRes);
+					paqueteReenvio.close();
+					enviaDestinatario.close();
+					socket.close();
+
 				}
 				System.out.println("Aceptado paquete de puerto " + paquete_recibido.getPuertoC());
 			}
